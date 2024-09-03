@@ -6,6 +6,8 @@ import { estimateColumns, mockData } from '~/constants';
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { useState } from 'react';
 import OpenAI from 'openai';
+import { createClient } from '@supabase/supabase-js'
+
 const text = `
 
 
@@ -1509,6 +1511,9 @@ const prompt: any = [
   `},
   {"role": "user", "content": text }
 ]
+const supabaseUrl = 'https://vilmdronupdhikexxmct.supabase.co'
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabase = createClient(supabaseUrl, supabaseKey ?? '')
 export default function Home() {
   const methods = useForm()
   const [epics, setEpics] = useState<string[]>();
@@ -1530,7 +1535,10 @@ export default function Home() {
             const parsed = content ? JSON.parse(content) : {}
             console.log('parsed', parsed);
             
-            return parsed
+            return supabase.from('mock_data').insert({
+              description: 'features_ml',
+              proto_json: parsed
+            })
           })
       }}>Create Form</Button>
       <SimpleTreeView>
