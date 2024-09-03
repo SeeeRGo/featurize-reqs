@@ -62,7 +62,31 @@ const getResponse = () => {
       // })
     })
 }
-export default function Home() {
+const rankingPrompt = (message: string, context: string): any => [
+  {"role": "system", "content": ``},
+  {"role": "user", "content": '' }
+]
+const ranking = {
+  epics: 5,
+  features: 2,
+  tasks: 1,
+}
+const calculateTotal = (original: Epic[], toRate: Epic[]) => {
+  const totalEpicPoints = original.length * ranking.epics
+  const totalFeaturePoints = original.flatMap(({ features }) => features).length * ranking.features
+  const totalTasksPoints = original.flatMap(({ features }) => features).flatMap(({ tasks }) => tasks).length * ranking.tasks
+
+  const totalPoints = totalEpicPoints + totalFeaturePoints + totalTasksPoints
+
+  const originalEpics = original.map(({ name }) => name)
+  const originalFeatures = original.flatMap(({ features }) => features).map(({ name }) => name)
+  const originalTasks = original.flatMap(({ features }) => features).flatMap(({ tasks }) => tasks).map(({ name }) => name)
+  const toRateEpicsContext = toRate.map(({ name }) => name).join(';\n')
+  const toRateFeaturesContext = toRate.flatMap(({ features }) => features).map(({ name }) => name).join(';\n')
+  const toRateTasksContext = toRate.flatMap(({ features }) => features).flatMap(({ tasks }) => tasks).map(({ name }) => name).join(';\n')
+  
+}
+export default function Projects() {
   const methods = useForm<{epics: Epic[], name: string, estimate_matrix: EstimateColumn[] }>()
 
   return (
