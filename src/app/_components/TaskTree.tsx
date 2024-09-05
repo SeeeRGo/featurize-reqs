@@ -15,15 +15,10 @@ export const TaskTree = ({ epicId, featureId }: IProps) => {
   return (
     <SimpleTreeView>
     {tasks.map((_, index) => (
-      <Controller
+      <TreeItem
         key={index}
-        name={`epics[${epicId}].features[${featureId}].tasks[${index}]`}
-        render={({ field: { onChange, value } }) => (
-          <TreeItem 
-            itemId={`epics[${epicId}].features[${featureId}].tasks[${index}]`} 
-            label={<TreeInputGroup labelSuffix="таски" value={value} onChange={onChange} />} 
-          />
-        )}
+        itemId={`epics[${epicId}].features[${featureId}].tasks[${index}]`} 
+        label={<TreeInputGroup fieldNamePrefix={`epics[${epicId}].features[${featureId}].tasks[${index}]`} labelSuffix="таски" />} 
       />
     ))}
     <TreeItem itemId={`add_task_epic${epicId}_feature${featureId}`} label={<Button onClick={() => {

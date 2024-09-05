@@ -1,5 +1,4 @@
 import OpenAI from 'openai';
-import { createClient } from '@supabase/supabase-js'
 import { docText } from '~/constants';
 import { Epic } from '~/types';
 import { supabase } from './db';

@@ -11,6 +11,8 @@ import { getEpicsWithContextsStepResponse } from '../_utils/stepFeaturizePrompts
 import { createClient } from '@supabase/supabase-js';
 import { datasetFeatures, extractFeaturesFromDbProject } from '../_utils/extractFeaturesForDataset';
 import { datasetTasks, extractTasksFromDbProject } from '../_utils/extractTasksForDataset';
+import { datasetEpicsContexts } from '../_utils/extractEpicsContextsForDataset';
+import { datasetEpics } from '../_utils/extractEpicsForDataset';
 
 // const aiEpics: any[] = 
 // const aiData4o: any[] = 
@@ -30,7 +32,9 @@ export default function Projects() {
         // await extractFeaturesFromDbProject(3)
         // await extractTasksFromDbProject(3)
         // await datasetFeatures()
-        await datasetTasks()
+        // await datasetTasks()
+        await datasetEpics()
+        await datasetEpicsContexts()
         // const { finalPercent } = await calculateTotal(mockData, [])
         // console.log('finalPercent', finalPercent);
       }}>Rate</Button>

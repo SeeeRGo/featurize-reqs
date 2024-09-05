@@ -11,19 +11,13 @@ export const EpicTree = () => {
   
   return (
     <SimpleTreeView>
-      {epics && epics.map((_, i) => <Controller
-        key={i}
-        name={`epics[${i}]`}
-        render={({ field: { onChange, value } }) => (
-          <TreeItem 
+      {epics && epics.map((_, i) => <TreeItem 
+            key={i}
             itemId={`epics[${i}]`} 
-            label={<TreeInputGroup labelSuffix="эпика" value={value} onChange={onChange} />}
+            label={<TreeInputGroup fieldNamePrefix={`epics[${i}]`} labelSuffix="эпика" />}
           >
             <FeatureTree epicId={i} />
-          </TreeItem>
-        )
-      }
-      />)}
+          </TreeItem>)}
       <TreeItem itemId={`add_epic`} label={<Button onClick={() => {
         setValue(`epics[${epics?.length ?? 0}]`, {
           id: (epics?.length ?? 0) + 1,

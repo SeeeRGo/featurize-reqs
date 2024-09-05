@@ -12,7 +12,7 @@ const extractEpicsForDataset = async (epics: Epic[], original_input: string) => 
   });
 }
 
-export const extractTasksFromDbProject = async (id: number) => {
+export const extractEpicsFromDbProject = async (id: number) => {
   const { data } = await supabase.from('fr_projects').select().eq('id', id).limit(1).single()
   if (data?.epics) {
     await extractEpicsForDataset(castDbJsonToType<Epic[]>(data.epics), data.original_input ?? '')
@@ -29,13 +29,13 @@ const datasetJsonl = ({ epics, original_input }: Database['public']['Tables']['f
   }) 
 }
 
-export const datasetTasks = async () => {
+export const datasetEpics = async () => {
   await supabase.from('fr_extract_epics_dataset').select().then(({ data }) => {
     if (data) {
-      const file = new File([data.map(datasetJsonl).join('\n')], "datasetTasks.jsonl", {
+      const file = new File([data.map(datasetJsonl).join('\n')], "datasetEpics.jsonl", {
         type: "text/plain",
       })
-      saveAs(file, `datasetTasks.jsonl`);
+      saveAs(file, `datasetEpics.jsonl`);
     }
   })
 }

@@ -12,18 +12,13 @@ export const FeatureTree = ({ epicId }: IProps) => {
   const features: Feature[] = watch(`epics[${epicId}].features`, [])
   return (
     <SimpleTreeView>
-      {features.map((_, i) => <Controller
-        key={i}
-        name={`epics[${epicId}].features[${i}]`}
-        render={({ field: { onChange, value }}) => (
-          <TreeItem 
+      {features.map((_, i) => <TreeItem 
+            key={i}
             itemId={`epics[${epicId}].features[${i}]`} 
-            label={<TreeInputGroup labelSuffix="фичи" value={value} onChange={onChange} />}
+            label={<TreeInputGroup fieldNamePrefix={`epics[${epicId}].features[${i}]`} labelSuffix="фичи" />}
           >
             <TaskTree epicId={epicId} featureId={i} />
-          </TreeItem>
-        )}
-      />)}
+          </TreeItem>)}
       <TreeItem itemId={`add_feature_epic${epicId}`} label={<Button onClick={() => {
         setValue(`epics[${epicId}].features[${features.length}]`, {
           id: features.length + 1,

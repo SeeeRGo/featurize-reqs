@@ -16,7 +16,7 @@ const extractEpicsContextForDataset = async (epics: Epic[], originalInput: strin
   }))
 }
 
-export const extractTasksFromDbProject = async (id: number) => {
+export const extractEpicsContextsFromDbProject = async (id: number) => {
   const { data } = await supabase.from('fr_projects').select().eq('id', id).limit(1).single()
   if (data?.epics) {
     await extractEpicsContextForDataset(castDbJsonToType<Epic[]>(data.epics), data.original_input ?? '')

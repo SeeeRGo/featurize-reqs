@@ -1,16 +1,26 @@
-import { Stack } from "@mui/material"
+import { Stack, TextField } from "@mui/material"
 import { InputTreeField } from "./InputTreeField"
+import { Controller } from "react-hook-form"
 
 interface IProps {
   labelSuffix: string
-  onChange: (...event: any[]) => void
-  value: any
+  fieldNamePrefix: string
 }
-export const TreeInputGroup = ({ labelSuffix, value, onChange}: IProps) => {
+export const TreeInputGroup = ({ labelSuffix, fieldNamePrefix}: IProps) => {
   return (
     <Stack rowGap={1}>
-      <InputTreeField label={`Название ${labelSuffix}`} value={value} onChange={onChange} valueFieldName="name" />
-      <InputTreeField label={`Контекст ${labelSuffix}`} value={value} onChange={onChange} valueFieldName="context" />
+      <Controller
+        name={`${fieldNamePrefix}.name`}
+        render={({ field: { onChange, value } }) => (
+          <TextField label={`Название ${labelSuffix}`} onClick={(e) => { e.stopPropagation() } } onChange={onChange} value={value} />
+        )}
+      />
+      <Controller
+        name={`${fieldNamePrefix}.context`}
+        render={({ field: { onChange, value } }) => (
+          <TextField label={`Контекст ${labelSuffix}`} onClick={(e) => { e.stopPropagation() } } onChange={onChange} value={value} />
+        )}
+      />
     </Stack>
   )
 }
