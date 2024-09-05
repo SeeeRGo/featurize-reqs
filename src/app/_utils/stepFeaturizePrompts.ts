@@ -16,16 +16,16 @@ const schemaEpicsJson = `
 `
 
 const model = 'gpt-4o'
-const promptEpicsStep: any = [
+export const promptEpicsStep: any = (text: string) => [
   {"role": "system", "content": `This is a message from a document with feature requirements for a future IT project. Extract information about project according to this JSON schema - ${schemaEpicsJson}. Epics are most important top-level pieces of the project, like individual pages and core backend services and integrations.
   `},
-  {"role": "user", "content": docText }
+  {"role": "user", "content": text }
 ]
 
 const getEpicsResponse = () => {
   return client.chat.completions.create({
     model,
-    messages: promptEpicsStep,
+    messages: promptEpicsStep(docText),
     response_format: {"type": "json_object"}
   })
   .asResponse()
@@ -38,10 +38,10 @@ const getEpicsResponse = () => {
     })
 }
 
-const promptEpicsContextsStep: any = (epicName: string) => [
+export const promptEpicsContextsStep: any = (text: string) => (epicName: string) => [
   {"role": "system", "content": `This is a message from a document with feature requirements for a future IT project. Extract all information about epic "${epicName}". Include everything that has above 30% chance to be relevant to the epic
   `},
-  {"role": "user", "content": docText }
+  {"role": "user", "content": text }
 ]
 
 const getEpicsContextsResponse = async (epics: string[]) => {
@@ -50,7 +50,7 @@ const getEpicsContextsResponse = async (epics: string[]) => {
     const epic = epics[i]
     const res = await client.chat.completions.create({
       model,
-      messages: promptEpicsContextsStep(epic),
+      messages: promptEpicsContextsStep(docText)(epic),
       response_format: {"type": "text"}
     })
     .asResponse()

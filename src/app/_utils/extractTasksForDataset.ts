@@ -1,4 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
 import { Epic, Feature } from "~/types";
 import { supabase } from "./db";
 import { castDbJsonToType } from "./castDbJsonToType";

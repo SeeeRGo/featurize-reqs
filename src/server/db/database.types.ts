@@ -109,6 +109,7 @@ export type Database = {
           estimate_matrix: Json | null
           id: number
           name: string | null
+          original_input: string | null
         }
         Insert: {
           created_at?: string
@@ -116,6 +117,7 @@ export type Database = {
           estimate_matrix?: Json | null
           id?: number
           name?: string | null
+          original_input?: string | null
         }
         Update: {
           created_at?: string
@@ -123,6 +125,7 @@ export type Database = {
           estimate_matrix?: Json | null
           id?: number
           name?: string | null
+          original_input?: string | null
         }
         Relationships: []
       }
