@@ -27,3 +27,6 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 ## How do I deploy this?
 
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+
+## Type defs are generated with command
+`npx supabase gen types --lang=typescript --project-id "$PROJECT_REF" --schema public > src/server/db/database.types.ts`

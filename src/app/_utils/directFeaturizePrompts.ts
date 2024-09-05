@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { createClient } from '@supabase/supabase-js'
 import { docText } from '~/constants';
+import { supabase } from './db';
 
 const client = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
@@ -29,9 +30,6 @@ const prompt: any = [
 ]
 
 export const getResponse = () => {
-  const supabaseUrl = 'https://vilmdronupdhikexxmct.supabase.co'
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  const supabase = createClient(supabaseUrl, supabaseKey ?? '')
   client.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: prompt,

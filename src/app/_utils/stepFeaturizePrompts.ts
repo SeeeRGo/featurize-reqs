@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import { createClient } from '@supabase/supabase-js'
 import { docText } from '~/constants';
 import { Epic } from '~/types';
+import { supabase } from './db';
 
 const client = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
@@ -77,7 +78,7 @@ const featuresSchemaJson = `{
   }[]
 }
 `
-const promptFeaturesStep: any = (epic: Pick<Epic, 'context' | 'name'>) => [
+export const promptFeaturesStep: any = (epic: Pick<Epic, 'context' | 'name'>) => [
   {"role": "system", "content": `Given a message with context about an epic "${epic.name}" from future IT project, extract features for given epic - logically distinct groups of tasks. Extract information according to JSON schema - ${featuresSchemaJson}
   `},
   {"role": "user", "content": epic.context }
@@ -107,7 +108,7 @@ const tasksSchemaJson = `{
 }[]
 }
 `
-const promptTaskStep: any = (epicContext: string, featureName: string) => [
+export const promptTaskStep: any = ({ epicContext, featureName }:{epicContext: string, featureName: string}) => [
   {"role": "system", "content": `Given a message with context about a feature "${featureName}" from future IT project, extract individual tasks for given feature. Extract information according to JSON schema - ${tasksSchemaJson}
   `},
   {"role": "user", "content": epicContext }
@@ -120,7 +121,7 @@ const getTasksStepResponse = async (epics: Array<Pick<Epic, 'context' | 'name' |
     const res = await Promise.allSettled((epic?.features ?? []).map(async feature => {
       const featuresWithTasks = await client.chat.completions.create({
         model,
-        messages: promptTaskStep(epic?.context ?? '', feature.name),
+        messages: promptTaskStep({epicContext: epic?.context ?? '', featureName: feature.name}),
         response_format: {"type": "json_object"}
       })
       .asResponse()
@@ -160,9 +161,6 @@ export const getEpicsWithContextsStepResponse = async () => {
   return fullEpics
 }
 const writeToDb = async (description: string, proto_json: any) => {
-  const supabaseUrl = 'https://vilmdronupdhikexxmct.supabase.co'
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  const supabase = createClient(supabaseUrl, supabaseKey ?? '')
   await supabase.from('mock_data').insert({
     description,
     proto_json
