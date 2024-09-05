@@ -23,13 +23,22 @@ export const calculateTotal = async (original: Epic[], toRate: Epic[]) => {
   const epicPoints = resEpics
     .map((res) => res.status === 'fulfilled' && res.value.score ? res.value.score / 100 : 0)
     .reduce((acc, score) => acc + score, 0) * ranking.epics
-  
-  const resFeatures = await Promise.allSettled(originalFeatures.map(feature => getRankingResponse(feature, toRateFeaturesContext)))
+  let resFeatures: any[] = []
+  for(let i = 0; i < originalFeatures.length / 5; i++) {
+    const slice = originalFeatures.slice(i * 5, (i+1) * 5)
+    const sliceFeatures = await Promise.allSettled(slice.map(feature => getRankingResponse(feature, toRateFeaturesContext)))
+    resFeatures = resFeatures.concat(sliceFeatures)
+  }
   const featurePoints = resFeatures
     .map((res) => res.status === 'fulfilled' && res.value.score ? res.value.score / 100 : 0)
     .reduce((acc, score) => acc + score, 0)  * ranking.features
 
-  const resTasks = await Promise.allSettled(originalTasks.map(task => getRankingResponse(task, toRateTasksContext)))
+  let resTasks: any[] = []
+  for(let i = 0; i < originalTasks.length / 5; i++) {
+    const slice = originalTasks.slice(i * 5, (i+1) * 5)
+    const sliceTasks = await Promise.allSettled(slice.map(task => getRankingResponse(task, toRateTasksContext)))
+    resTasks = resTasks.concat(sliceTasks)
+  }
   const taskPoints = resTasks
     .map((res) => res.status === 'fulfilled' && res.value.score ? res.value.score / 100 : 0)
     .reduce((acc, score) => acc + score, 0)  * ranking.tasks

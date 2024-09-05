@@ -14,6 +14,7 @@ const schemaEpicsJson = `
 }[]
 `
 
+const model = 'gpt-4o'
 const promptEpicsStep: any = [
   {"role": "system", "content": `This is a message from a document with feature requirements for a future IT project. Extract information about project according to this JSON schema - ${schemaEpicsJson}. Epics are most important top-level pieces of the project, like individual pages and core backend services and integrations.
   `},
@@ -22,7 +23,7 @@ const promptEpicsStep: any = [
 
 const getEpicsResponse = () => {
   return client.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model,
     messages: promptEpicsStep,
     response_format: {"type": "json_object"}
   })
@@ -47,7 +48,7 @@ const getEpicsContextsResponse = async (epics: string[]) => {
   for (let i = 0; i < epics.length; i++) {
     const epic = epics[i]
     const res = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model,
       messages: promptEpicsContextsStep(epic),
       response_format: {"type": "text"}
     })
@@ -83,7 +84,7 @@ const promptFeaturesStep: any = (epic: Pick<Epic, 'context' | 'name'>) => [
 ]
 const getFeaturesStepResponse = (epic: Pick<Epic, 'context' | 'name'>) => {
   return client.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model,
     messages: promptFeaturesStep(epic),
     response_format: {"type": "json_object"}
   })
@@ -112,24 +113,26 @@ const promptTaskStep: any = (epicContext: string, featureName: string) => [
   {"role": "user", "content": epicContext }
 ]
 const getTasksStepResponse = async (epics: Array<Pick<Epic, 'context' | 'name' | 'features'>>) => {
+  
   const results = []
   for (let i = 0; i < epics.length; i++) {
     const epic = epics[i]
     const res = await Promise.allSettled((epic?.features ?? []).map(async feature => {
       const featuresWithTasks = await client.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: promptEpicsContextsStep(epic?.context ?? '', feature.name),
-        response_format: {"type": "text"}
+        model,
+        messages: promptTaskStep(epic?.context ?? '', feature.name),
+        response_format: {"type": "json_object"}
       })
       .asResponse()
         .then(response => response.json())
         .then(json => {
           const content = json.choices.at(0)?.message.content ?? ''
+          const parsed = content ? JSON.parse(content) : {}
           console.log('parsed', content);
   
           return {
             ...feature,
-            tasks: content.tasks
+            ...parsed,
           }
         })
         return featuresWithTasks
@@ -138,6 +141,7 @@ const getTasksStepResponse = async (epics: Array<Pick<Epic, 'context' | 'name' |
       ...epic,
       features: res.map(result => 'value' in result ? result.value : undefined).filter(res => !!res)
     }
+
       results.push(fullEpic)
   }
 
@@ -148,10 +152,12 @@ export const getEpicsWithContextsStepResponse = async () => {
   const epicsWithContexts = await getEpicsContextsResponse(epics.map(({ name }: any) => name))
   const epicsWithFeatures = await Promise.allSettled(epicsWithContexts.map(getFeaturesStepResponse))
   const parsedEpicsWithFeatures = epicsWithFeatures.map(result => 'value' in result ? result.value : undefined).filter(res => !!res)
-  const fullEpics = await Promise.allSettled(parsedEpicsWithFeatures.map(getTasksStepResponse))
-
-  await writeToDb('features_ml_step_with_features_and_tasks', fullEpics)
-  // return epicsWithFeatures
+  
+  const fullEpics = await getTasksStepResponse(parsedEpicsWithFeatures)
+  console.log('full epics', fullEpics);
+  
+  await writeToDb('features_ml_step_full_4o', fullEpics)
+  return fullEpics
 }
 const writeToDb = async (description: string, proto_json: any) => {
   const supabaseUrl = 'https://vilmdronupdhikexxmct.supabase.co'
