@@ -12,13 +12,13 @@ export const TreeInputGroup = ({ labelSuffix, fieldNamePrefix}: IProps) => {
       <Controller
         name={`${fieldNamePrefix}.name`}
         render={({ field: { onChange, value } }) => (
-          <TextField label={`Название ${labelSuffix}`} onClick={(e) => { e.stopPropagation() } } onChange={onChange} value={value} />
+          <TextField fullWidth label={`Название ${labelSuffix}`} onClick={(e) => { e.stopPropagation() } } onChange={onChange} value={value} />
         )}
       />
       <Controller
         name={`${fieldNamePrefix}.context`}
         render={({ field: { onChange, value } }) => (
-          <TextField label={`Контекст ${labelSuffix}`} onClick={(e) => { e.stopPropagation() } } onChange={onChange} value={value} />
+          <TextField fullWidth label={`Контекст ${labelSuffix}`} onClick={(e) => { e.stopPropagation() } } onChange={onChange} value={value} />
         )}
       />
     </Stack>

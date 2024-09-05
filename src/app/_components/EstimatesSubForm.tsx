@@ -7,7 +7,7 @@ export const EstimateMatrix = () => {
   const { setValue } = useFormContext()
   const estimates: EstimateColumn[] = useWatch({ name: 'estimate_matrix', defaultValue: []})
   return (
-    <Stack rowGap={1}>
+    <Stack sx={{ width: '100%' }} rowGap={1}>
       {estimates.map(({ id, type, name, ...rest }, i) => <Fragment key={i}>
         <Controller
           name={`estimate_matrix[${i}].type`}

@@ -10,7 +10,7 @@ export const EpicTree = () => {
   const epics: Epic[] = useWatch({ name: `epics`, control })
   
   return (
-    <SimpleTreeView>
+    <SimpleTreeView sx={{ width: '100%' }}>
       {epics && epics.map((_, i) => <TreeItem 
             key={i}
             itemId={`epics[${i}]`} 

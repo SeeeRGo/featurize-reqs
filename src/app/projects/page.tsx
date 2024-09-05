@@ -40,7 +40,7 @@ export default function Projects() {
       }}>Rate</Button>
       <FormProvider {...methods}>
         <EstimateMatrix />
-        <Controller name="name" render={({ field }) => <TextField label="Название проекта" {...field} />} />
+        <Controller name="name" render={({ field }) => <TextField fullWidth label="Название проекта" {...field} />} />
         <EpicTree />
       </FormProvider>
     </main>
