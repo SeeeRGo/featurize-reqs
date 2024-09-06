@@ -11,8 +11,9 @@ import { getEpicsWithContextsStepResponse } from '../_utils/stepFeaturizePrompts
 import { createClient } from '@supabase/supabase-js';
 import { datasetFeatures, extractFeaturesFromDbProject } from '../_utils/extractFeaturesForDataset';
 import { datasetTasks, extractTasksFromDbProject } from '../_utils/extractTasksForDataset';
-import { datasetEpicsContexts } from '../_utils/extractEpicsContextsForDataset';
-import { datasetEpics } from '../_utils/extractEpicsForDataset';
+import { datasetEpicsContexts, extractEpicsContextsFromDbProject } from '../_utils/extractEpicsContextsForDataset';
+import { datasetEpics, extractEpicsFromDbProject } from '../_utils/extractEpicsForDataset';
+import { supabase } from '../_utils/db';
 
 // const aiEpics: any[] = 
 // const aiData4o: any[] = 
@@ -23,18 +24,20 @@ export default function Projects() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
-      {/* <Button onClick={methods.handleSubmit(async data => {
-        await supabase.from('fr_projects').insert(data)
-      })}>Create Form</Button> */}
+      <Button onClick={methods.handleSubmit(async data => {
+        await supabase.from('fr_projects').insert(data as any)
+      })}>Create Form</Button>
       <Button onClick={async () => {
         // await getResponse()
         // await getEpicsWithContextsStepResponse()
-        // await extractFeaturesFromDbProject(3)
-        // await extractTasksFromDbProject(3)
+        // await extractFeaturesFromDbProject(4)
+        // await extractTasksFromDbProject(4)
+        // await extractEpicsFromDbProject(12)
+        // await extractEpicsContextsFromDbProject(4)
         // await datasetFeatures()
         // await datasetTasks()
-        await datasetEpics()
-        await datasetEpicsContexts()
+        // await datasetEpics()
+        // await datasetEpicsContexts()
         // const { finalPercent } = await calculateTotal(mockData, [])
         // console.log('finalPercent', finalPercent);
       }}>Rate</Button>
